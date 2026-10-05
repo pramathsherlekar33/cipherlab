@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CipherLab — Cryptography Workstation</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;background:#03060b;color:#eef2ff}body{overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;background:linear-gradient(rgba(34,211,238,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.035) 1px,transparent 1px);background-size:36px 36px;mask-image:linear-gradient(to bottom,#000,transparent 90%);pointer-events:none}
+body:after{content:"";position:fixed;width:500px;height:500px;border-radius:50%;background:#7c3aed18;filter:blur(90px);top:-180px;right:-100px;pointer-events:none}
+.shell{max-width:1240px;margin:auto;padding:22px 22px 35px;position:relative}
+nav{height:58px;border:1px solid #1c2940;background:#070d17e8;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;box-shadow:0 20px 60px #0008;backdrop-filter:blur(18px)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:950;letter-spacing:.08em}.logo-mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,#8b5cf6,#06b6d4);box-shadow:0 0 25px #7c3aed55}.navlinks{display:flex;gap:6px}.navlinks span{font-size:11px;color:#718098;padding:8px 10px;border-radius:8px}.navlinks span:first-child{color:#d9d2ff;background:#17132a}.live{font-size:10px;color:#67e8f9;border:1px solid #164e63;background:#06202a;padding:7px 10px;border-radius:999px}
+.hero{padding:58px 0 38px;display:grid;grid-template-columns:1.25fr .75fr;gap:35px;align-items:center}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.22em;color:#a78bfa}.hero h1{font-size:clamp(45px,7vw,82px);line-height:.9;letter-spacing:-.065em;margin:14px 0}.hero h1 span{display:block;background:linear-gradient(100deg,#a78bfa,#22d3ee);color:transparent;background-clip:text}.hero p{color:#8290a7;max-width:650px;line-height:1.7;margin:0}.terminal{border:1px solid #25334b;background:#070c14;border-radius:18px;padding:17px;box-shadow:0 25px 80px #0008;transform:rotate(1deg)}.dots{color:#47546a;font-size:10px;letter-spacing:4px}.termline{font:12px/2 ui-monospace,monospace;color:#718098;margin-top:12px}.termline b{color:#67e8f9}.termline .v{color:#c4b5fd}
+.layout{display:grid;grid-template-columns:215px 1fr;gap:16px}.side,.panel{background:#080e18e8;border:1px solid #1c2940;border-radius:18px;box-shadow:0 20px 60px #0007;backdrop-filter:blur(16px)}.side{padding:13px;height:max-content}.side-title{font-size:9px;color:#59677d;letter-spacing:.15em;font-weight:900;padding:9px}.method{width:100%;border:1px solid transparent;background:transparent;color:#8996aa;text-align:left;padding:12px;border-radius:11px;margin:2px 0;cursor:pointer}.method strong{display:block;color:inherit;font-size:12px}.method small{font-size:9px;color:#5f6d83}.method.active{background:linear-gradient(90deg,#17102b,#0d1722);border-color:#49327a;color:#ddd6fe;box-shadow:inset 3px 0 #8b5cf6}.method:hover{background:#0e1725}.panel{padding:18px}.paneltop{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.paneltop h2{font-size:14px;margin:0}.badge{font:9px ui-monospace;color:#67e8f9;border:1px solid #164e63;background:#06202a;padding:6px 8px;border-radius:7px}
+.work{display:grid;grid-template-columns:1fr 48px 1fr;gap:12px;align-items:stretch}.box{border:1px solid #202d43;background:#050a11;border-radius:14px;padding:14px;min-width:0}.boxhead{display:flex;justify-content:space-between;color:#66758d;font-size:9px;font-weight:900;letter-spacing:.13em;margin-bottom:9px}.boxhead b{color:#47556b}.arrowbox{display:grid;place-items:center;color:#8b5cf6;font-size:25px}
+textarea{width:100%;height:235px;background:transparent;border:0;resize:none;color:#dce5f5;outline:none;font:13px/1.7 ui-monospace,monospace}.cipherout{height:235px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;color:#c4b5fd;font:13px/1.7 ui-monospace,monospace}.cursor{display:inline-block;width:7px;height:14px;background:#8b5cf6;animation:blink 1s steps(2) infinite;vertical-align:-2px}@keyframes blink{50%{opacity:0}}
+.controls{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:10px;margin-top:12px}.control label{display:block;font-size:9px;color:#66758d;font-weight:900;letter-spacing:.13em;margin:0 0 6px}.control input,.control select{width:100%;height:43px;background:#080e17;border:1px solid #25334a;border-radius:10px;color:#dfe7f4;padding:0 11px;outline:none}.control input:focus,.control select:focus{border-color:#7c3aed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button.action{height:43px;padding:0 16px;border:0;border-radius:10px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-weight:850;cursor:pointer;box-shadow:0 8px 25px #7c3aed35}button.secondary{background:#111b2b;border:1px solid #263650;box-shadow:none}.actions button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.stat{background:#070d16;border:1px solid #1d2a3f;border-radius:11px;padding:10px}.stat span{display:block;color:#5f6e85;font-size:8px;text-transform:uppercase;letter-spacing:.12em}.stat b{display:block;font:14px ui-monospace;margin-top:5px;color:#dbe5f4}
+.explain{margin-top:12px;border:1px solid #1d2a3f;background:#070d16;border-radius:12px;padding:13px;color:#8290a7;font-size:11px;line-height:1.6}.explain strong{color:#dce5f5}.footer{text-align:center;color:#435169;font-size:9px;margin-top:25px;letter-spacing:.08em}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.terminal{display:none}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.side-title{grid-column:1/-1}.work{grid-template-columns:1fr}.arrowbox{height:20px;transform:rotate(90deg)}.controls{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.navlinks{display:none}}
+@media(max-width:520px){.shell{padding:12px}.hero{padding:40px 0 25px}.hero h1{font-size:50px}.controls{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side-title{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav><div class="logo"><span class="logo-mark">⌁</span>CIPHERLAB</div><div class="navlinks"><span>WORKSTATION</span><span>ALGORITHMS</span><span>LAB</span></div><div class="live">● ENGINE ONLINE</div></nav>
+<section class="hero"><div><div class="eyebrow">CRYPTOGRAPHY / INTERACTIVE WORKSTATION</div><h1>Break down.<span>Encrypt everything.</span></h1><p>A visual playground for classical cryptography. Enter plaintext, select an algorithm, provide a key, and inspect the transformation in real time.</p></div><div class="terminal"><div class="dots">● ● ●</div><div class="termline">$ cipherlab --status</div><div class="termline">engine: <b>ONLINE</b></div><div class="termline">processing: <b>LOCAL</b></div><div class="termline">algorithm: <span class="v" id="termAlg">CAESAR</span></div><div class="termline">entropy: <span class="v">CLASSICAL</span></div><div class="termline">$ <span class="cursor"></span></div></div></section>
+
+<div class="layout">
+<aside class="side"><div class="side-title">CIPHER LIBRARY</div>
+<button class="method active" data-method="caesar"><strong>01 · Caesar</strong><small>Shift substitution</small></button>
+<button class="method" data-method="vigenere"><strong>02 · Vigenère</strong><small>Polyalphabetic</small></button>
+<button class="method" data-method="atbash"><strong>03 · Atbash</strong><small>Mirror substitution</small></button>
+<button class="method" data-method="railfence"><strong>04 · Rail Fence</strong><small>Zig-zag transposition</small></button>
+<button class="method" data-method="columnar"><strong>05 · Columnar</strong><small>Keyed transposition</small></button>
+<button class="method" data-method="affine"><strong>06 · Affine</strong><small>Mathematical mapping</small></button>
+</aside>
+
+<main class="panel">
+<div class="paneltop"><h2>ENCRYPTION WORKBENCH</h2><span class="badge">AES-LIKE UI / CLASSICAL ENGINE</span></div>
+<div class="work">
+<div class="box"><div class="boxhead"><span>PLAINTEXT</span><b id="inputLen">0 CHARS</b></div><textarea id="plain" spellcheck="false">HELLO WORLD</textarea></div>
+<div class="arrowbox">→</div>
+<div class="box"><div class="boxhead"><span>CIPHERTEXT</span><b id="outLen">0 CHARS</b></div><div class="cipherout" id="output">KHOOR ZRUOG</div></div>
+</div>
+<div class="controls">
+<div class="control"><label>KEY / PARAMETER</label><input id="key" value="3" placeholder="3 / SECRET / 5,8"></div>
+<div class="control"><label>FORMAT</label><select id="format"><option value="keep">Preserve spaces</option><option value="letters">Letters only</option></select></div>
+<div class="control"><label>OPERATION</label><select id="operation"><option>ENCRYPT</option></select></div>
+</div>
+<div class="actions"><button class="action" id="encrypt">⚡ RUN ENCRYPTION</button><button class="action secondary" id="copy">COPY OUTPUT</button><button class="action secondary" id="swap">USE OUTPUT AS INPUT</button><button class="action secondary" id="reset">RESET</button></div>
+<div class="stats"><div class="stat"><span>Algorithm</span><b id="statAlg">CAESAR</b></div><div class="stat"><span>Key</span><b id="statKey">3</b></div><div class="stat"><span>Input size</span><b id="statIn">11 B</b></div><div class="stat"><span>Status</span><b style="color:#67e8f9">READY</b></div></div>
+<div class="explain" id="explain"><strong>How it works:</strong> Caesar Cipher shifts every alphabetic character by the selected key. Example: A + 3 → D.</div>
+</main></div>
+<div class="footer">CIPHERLAB // EDUCATIONAL CRYPTOGRAPHY SIMULATOR // ALL PROCESSING OCCURS IN YOUR BROWSER</div>
+</div>
+<script>
+const $=id=>document.getElementById(id),A="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+let current="caesar";
+const desc={caesar:"Caesar Cipher shifts every alphabetic character by the selected key. Example: A + 3 → D.",vigenere:"Vigenère Cipher uses a repeating keyword, applying a different Caesar shift to successive letters.",atbash:"Atbash replaces each letter with its mirror in the alphabet: A ↔ Z, B ↔ Y, and so on.",railfence:"Rail Fence writes characters in a zig-zag pattern across rails, then reads the rails from top to bottom.",columnar:"Columnar Transposition arranges text into columns and reads them according to alphabetical order of the key.",affine:"Affine Cipher maps each letter using E(x) = (a·x + b) mod 26. Use a key such as 5,8."};
+function caesar(s,k){k=((Number(k)%26)+26)%26;return s.replace(/[A-Za-z]/g,c=>{let b=c===c.toUpperCase()?65:97;return String.fromCharCode((c.charCodeAt(0)-b+k)%26+b)})}
+function atbash(s){return s.replace(/[A-Za-z]/g,c=>{let r=A[25-A.indexOf(c.toUpperCase())];return c===c.toUpperCase()?r:r.toLowerCase()})}
+function vigenere(s,k){k=String(k).toUpperCase().replace(/[^A-Z]/g,"")||"A";let i=0;return s.replace(/[A-Za-z]/g,c=>{let sh=A.indexOf(k[i++%k.length]),b=c===c.toUpperCase()?65:97;return String.fromCharCode((c.charCodeAt(0)-b+sh)%26+b)})}
+function rail(s,n){n=Math.max(2,Math.min(20,Number(n)||2));let rows=Array.from({length:n},()=>[]),r=0,d=1;for(let c of s.replace(/\s/g,"")){rows[r].push(c);if(r===0)d=1;if(r===n-1)d=-1;r+=d}return rows.flat().join("")}
+function columnar(s,k){k=String(k).toUpperCase().replace(/[^A-Z0-9]/g,"")||"KEY";s=s.replace(/\s/g,"");let order=[...k].map((c,i)=>({c,i})).sort((a,b)=>a.c.localeCompare(b.c)||a.i-b.i),r="";for(let o of order)for(let i=o.i;i<s.length;i+=k.length)r+=s[i];return r}
+function affine(s,k){let[a,b]=String(k).split(",").map(Number);a=Number.isFinite(a)?a:5;b=Number.isFinite(b)?b:8;return s.replace(/[A-Za-z]/g,c=>{let base=c===c.toUpperCase()?65:97;return String.fromCharCode((((a*(c.charCodeAt(0)-base)+b)%26+26)%26)+base)})}
+function run(){let s=$("format").value==="keep"?$("plain").value:$("plain").value.replace(/[^A-Za-z]/g,""),v;
+switch(current){case"caesar":v=caesar(s,$("key").value);break;case"vigenere":v=vigenere(s,$("key").value);break;case"atbash":v=atbash(s);break;case"railfence":v=rail(s,$("key").value);break;case"columnar":v=columnar(s,$("key").value);break;case"affine":v=affine(s,$("key").value);break}
+$("output").textContent=v||"—";$("inputLen").textContent=s.length+" CHARS";$("outLen").textContent=(v||"").length+" CHARS";$("statAlg").textContent=current.toUpperCase();$("statKey").textContent=$("key").value||"—";$("statIn").textContent=new Blob([s]).size+" B";$("termAlg").textContent=current.toUpperCase();$("explain").innerHTML="<strong>How it works:</strong> "+desc[current];}
+document.querySelectorAll(".method").forEach(b=>b.onclick=()=>{document.querySelectorAll(".method").forEach(x=>x.classList.remove("active"));b.classList.add("active");current=b.dataset.method;let defaults={caesar:"3",vigenere:"KEY",atbash:"—",railfence:"3",columnar:"KEY",affine:"5,8"};$("key").value=defaults[current];run()});
+$("encrypt").onclick=run;$("plain").oninput=run;$("key").oninput=run;$("format").onchange=run;
+$("reset").onclick=()=>{$("plain").value="HELLO WORLD";current="caesar";document.querySelectorAll(".method").forEach(x=>x.classList.toggle("active",x.dataset.method==="caesar"));$("key").value="3";$("format").value="keep";run()};
+$("swap").onclick=()=>{$("plain").value=$("output").textContent==="—"?"":$("output").textContent;run()};
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText($("output").textContent)}catch(e){}};
+run();
+</script>
+</body></html>
